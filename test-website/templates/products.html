@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}商品列表{% endblock %}
+{% block content %}
+<h2 style="margin-bottom:16px">商品列表</h2>
+<div class="product-grid">
+    {% for p in products %}
+    <div class="product-card" id="product-{{ p.id }}">
+        <h3>{{ p.name }}</h3>
+        <div class="price">¥{{ p.price }}</div>
+        <div style="color:#666;margin:8px 0">库存: {{ p.stock }}</div>
+        <button class="btn btn-primary" onclick="addToCart({{ p.id }})">加入购物车</button>
+    </div>
+    {% endfor %}
+</div>
+<div id="msg" style="position:fixed;top:80px;right:20px;background:#52c41a;color:white;padding:12px 24px;border-radius:4px;display:none;z-index:100"></div>
+<script>
+async function addToCart(id) {
+    const res = await fetch('/api/cart/add', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({product_id: id})
+    });
+    const data = await res.json();
+    const msg = document.getElementById('msg');
+    if (res.ok) {
+        msg.textContent = data.message;
+        msg.style.background = '#52c41a';
+    } else {
+        msg.textContent = data.error;
+        msg.style.background = '#ff4d4f';
+    }
+    msg.style.display = 'block';
+    setTimeout(() => msg.style.display = 'none', 2000);
+}
+</script>
+{% endblock %}
