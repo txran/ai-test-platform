@@ -6,3 +6,4 @@ uploads/
 dist/
 .env
 *.db
+test-website/
